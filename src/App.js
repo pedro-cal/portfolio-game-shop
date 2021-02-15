@@ -5,25 +5,24 @@ import Sorter from './components/Sorter/Sorter';
 import GlobalStyle from './styles/globalStyle';
 
 import productsJSON from './data/products.json';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [products, setProducts] = useState(
-    productsJSON.sort(
-      (a,b) => a.name > b.name ? 1 : 
-      a.name < b.name ? -1 : 0)
-    );
-  
+  const [products, setProducts] = useState(productsJSON);
+  const [sortingOption, setSortingOption] = useState('unselected');
+
   const [cart, setCart] = useState([]);
   
-  //* receive sorting option from Sorter child component and Sort Products 
+  //* receive sorting option from Sorter child component 
   const receiveSortingOption = (receivedOption) => {
-    let sortedProducts = [...products].sort((a,b) => (
-      a[receivedOption] > b[receivedOption]) ? 1 
-      : ((b[receivedOption] > a[receivedOption]) ? -1 : 0));
-
-    setProducts(sortedProducts);
+    setSortingOption(receivedOption);
   };
+
+  useEffect(() => {
+    // let sortedProducts = products.sort((a, b) => a[sortingOption] - b[sortingOption]);
+    let sortedProducts = products.sort((a,b) => (a[sortingOption] > b[sortingOption]) ? 1 : ((b[sortingOption] > a[sortingOption]) ? -1 : 0));
+    setProducts(sortedProducts);
+  }, [sortingOption, products]);
 
 
   //* update cart through callback prop 
@@ -44,8 +43,9 @@ function App() {
       <Header cartLength={cart.length}></Header>
 
       <Sorter receiveSortingOption={receiveSortingOption} />
+      <p>Order by: {sortingOption}</p>
       
-      <GamesGrid products={products} handleUpdateCart={handleUpdateCart} />
+      <GamesGrid sortingOption={sortingOption} products={products} handleUpdateCart={handleUpdateCart} />
 
       <GlobalStyle />
     </>
