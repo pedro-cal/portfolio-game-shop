@@ -4,9 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import GlobalContext from './context/context';
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GlobalContext>
+      <App />
+    </GlobalContext>
   </React.StrictMode>,
   document.getElementById('root')
 );
